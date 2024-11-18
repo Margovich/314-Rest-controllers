@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -36,14 +37,14 @@ public class UserServiceImpl implements UserService {
     // методы User
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         usersRepository.save(user);
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updateUser(User user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void deleteUser(long id) {
         usersRepository.deleteById(id);
     }
@@ -77,6 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = findByNickname(s);
         if (user == null) {
@@ -94,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void saveRole(Role role) {
         rolesRepository.save(role);
     }
