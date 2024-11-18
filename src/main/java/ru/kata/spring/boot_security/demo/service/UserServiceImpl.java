@@ -1,0 +1,115 @@
+package ru.kata.spring.boot_security.demo.service;
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+@Transactional
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository usersRepository;
+    private final RoleRepository rolesRepository;
+    private final PasswordEncoder passwordEncoder;
+
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository rolesRepository, @Lazy PasswordEncoder passwordEncoder) {
+        this.usersRepository = userRepository;
+        this.rolesRepository = rolesRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    // методы User
+
+    @Override
+    @Transactional
+    public void saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        usersRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user) {
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        usersRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(long id) {
+        usersRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser(long id) {
+        return usersRepository.getById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers() {
+        return usersRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByNickname(String nickname) {
+        return usersRepository.findUserByNickname(nickname);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = findByNickname(s);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found exception");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
+    }
+
+    // методы Role
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Role> getAllRoles() {
+        return rolesRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void saveRole(Role role) {
+        rolesRepository.save(role);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Role showRoleById(Long id) {
+        return rolesRepository.getById(id);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+
+}

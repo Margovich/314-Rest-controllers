@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>изменить пользователя</title>
+</head>
+<body>
+<h1>изменить пользователя</h1>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+<form th:method="post"
+      th:action="@{/admin/updateuser/{id}(id=${user.id})}"
+      th:object="${user}">
+    <input type="hidden" th:field="*{id}"/>
+
+    <label for="nickname">Имя пользователя:</label>
+    <input type="text" id="nickname" th:field="*{nickname}" />
+    <div th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">
+    </div>
+
+    <label for="email">Email: </label>
+    <input type="email" th:field="*{email}" id="Email" required/>
+
+    <label for="age">Возраст: </label>
+    <input type="number" th:field="*{age}" id="Age" min="0" required/>
+
+    <label for="password">Пароль:</label>
+    <input type="password" th:field="*{password}" id="password">
+
+    <label>Выберете роль:
+        <input type="checkbox" name="roles"
+               th:each="roles : ${role}"
+               th:value="${roles.getId()}"
+               th:text="${roles.getRoleName().replace('ROLE_', '') + ' '}"
+               th:field="*{roles}"
+        />
+    </label>
+
+    <button type="submit">сохранить</button>
+</form>
+<a href="/admin">
+    <button type="submit">Отмена</button>
+</a>
+</body>
+</html>
