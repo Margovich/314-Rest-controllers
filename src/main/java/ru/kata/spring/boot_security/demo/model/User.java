@@ -21,7 +21,7 @@ public class User implements UserDetails {
 
     @NotBlank(message = "Nickname cannot be empty")
     @Pattern(regexp = "^[A-Za-zА-Яа-яЁё0-9_-]{3,20}$", message = "Nickname can only contain letters, numbers, underscores and dashes and from 3 to 20 characters")
-    @Column(name = "nickname")
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
     @NotBlank(message = "password cannot be empty")

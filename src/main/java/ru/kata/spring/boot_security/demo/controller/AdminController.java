@@ -4,23 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
-
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
+
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     private UserService userService;
-    private UserRepository userRepository;
 
     @Autowired
     public AdminController(@Lazy UserService userService) {
@@ -35,7 +30,7 @@ public class AdminController {
 
     @GetMapping(value = "/user")
     public String showUserInfo(Model model, Principal principal) {
-        User user = userRepository.findUserByNickname(principal.getName());
+        User user = userService.findByNickname(principal.getName());
         model.addAttribute("user", user);
         return "user";
 

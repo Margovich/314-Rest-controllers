@@ -15,6 +15,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +40,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        usersRepository.save(user);
+        if (
+                usersRepository.existsByNickname(user.getNickname())) {
+            throw new EntityExistsException("The user with this name already exists");
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            usersRepository.save(user);
+        }
     }
 
     @Override
@@ -84,7 +90,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found exception");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
+        return user;
     }
 
     // методы Role
@@ -106,12 +112,5 @@ public class UserServiceImpl implements UserService {
     public Role showRoleById(Long id) {
         return rolesRepository.getById(id);
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
 
 }

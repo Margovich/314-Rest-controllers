@@ -23,5 +23,4 @@ public interface UserService extends UserDetailsService {
     List<Role> getAllRoles();
     void saveRole(Role role);
     Role showRoleById(Long id);
-    PasswordEncoder passwordEncoder();
 }
