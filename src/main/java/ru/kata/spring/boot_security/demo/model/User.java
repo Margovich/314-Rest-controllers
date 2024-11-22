@@ -1,10 +1,12 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
-
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.kata.spring.boot_security.demo.validation.CreateGroup;
+import ru.kata.spring.boot_security.demo.validation.UpdateGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -19,21 +21,22 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotBlank(message = "Nickname cannot be empty")
-    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё0-9_-]{3,20}$", message = "Nickname can only contain letters, numbers, underscores and dashes and from 3 to 20 characters")
+    @NotBlank(message = "Nickname cannot be empty", groups = {CreateGroup.class, UpdateGroup.class})
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё0-9_-]{3,20}$", message = "Nickname can only contain letters, numbers, underscores and dashes and from 3 to 20 characters", groups = {CreateGroup.class, UpdateGroup.class})
     @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
-    @NotBlank(message = "password cannot be empty")
+    @NotBlank(message = "Password cannot be empty", groups = {CreateGroup.class})
+    @Size(min = 6, message = "Password must be at least 6 characters long", groups = {CreateGroup.class, UpdateGroup.class})
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Email should be valid")
+    @NotBlank(message = "Email cannot be empty", groups = {CreateGroup.class, UpdateGroup.class})
+    @Email(message = "Email should be valid", groups = {CreateGroup.class, UpdateGroup.class})
     @Column(name = "email")
     private String email;
 
-    @Min(value = 1, message = "Age must be greater than 0")
+    @Min(value = 1, message = "Age must be greater than 0", groups = {CreateGroup.class, UpdateGroup.class})
     @Column(name = "age")
     private int age;
 
@@ -43,7 +46,8 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @NotEmpty(message = "Должна быть выбрана хотя бы одна роль")
+    @NotEmpty(message = "At least one role must be selected", groups = {CreateGroup.class, UpdateGroup.class})
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
     public User() {}
@@ -57,7 +61,7 @@ public class User implements UserDetails {
     }
 
     public Set<Role> getRoles() {
-        return roles = roles;
+        return roles;
     }
 
     public void setRoles(Set<Role> roles) {
@@ -80,15 +84,16 @@ public class User implements UserDetails {
         this.nickname = nickname;
     }
 
-    public void getPassword(String password) {
-        this.password = password;}
+    public String getPassword() {
+        return password;
+    }
 
-    public void setPassword(@NotBlank(message = "password cannot be empty") String password) {
+    public void setPassword(@NotBlank(message = "Password cannot be empty") String password) {
         this.password = password;
     }
 
     public String getEmail() {
-        return email; //
+        return email;
     }
 
     public void setEmail(String email) {
@@ -107,11 +112,6 @@ public class User implements UserDetails {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -135,6 +135,7 @@ public class User implements UserDetails {
     }
 
     @Override
+
     public boolean isEnabled() {
         return true;
     }
@@ -158,6 +159,4 @@ public class User implements UserDetails {
     public int hashCode() {
         return Objects.hash(id, nickname, email, age);
     }
-
-
 }

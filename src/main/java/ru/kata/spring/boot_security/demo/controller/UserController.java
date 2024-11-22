@@ -32,9 +32,9 @@ public class UserController {
     public String showUserInfo(Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findUserByNickname(principal.getName());
-            model.addAttribute("user", user);
+        model.addAttribute("user", user);
         model.addAttribute("auth", authentication);
-            return "user";
+            return "userpage";
 
     }
 }

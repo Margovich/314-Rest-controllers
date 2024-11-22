@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import javax.validation.Valid;
-import java.security.Principal;
+import ru.kata.spring.boot_security.demo.validation.CreateGroup;
+import ru.kata.spring.boot_security.demo.validation.UpdateGroup;
 
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/admin")
@@ -24,50 +26,35 @@ public class AdminController {
 
     @GetMapping("")
     public String getAllUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "users";
-    }
-
-    @GetMapping(value = "/user")
-    public String showUserInfo(Model model, Principal principal) {
-        User user = userService.findByNickname(principal.getName());
-        model.addAttribute("user", user);
-        return "user";
-
-    }
-
-    @GetMapping("/adduser")
-    public String openUserAddForm(Model model) {
+        model.addAttribute("usersList", userService.getAllUsers());
         model.addAttribute("user", new User());
         model.addAttribute("role", userService.getAllRoles());
-        return "adduser";
+        return "admin";
     }
 
-    @PostMapping("/adduser")
-    public String addUser(@ModelAttribute(value = "user") User user) {
+    @PostMapping("")
+    public String addUser(@ModelAttribute(value = "user") @Valid User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("role", userService.getAllRoles());
+            return "admin";
+        }
         userService.saveUser(user);
         return "redirect:/admin";
     }
 
-    @GetMapping("/updateuser/{id}")
-    public String openUpdateUserForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUser(id);
-        model.addAttribute("user", user);
-        model.addAttribute("role", userService.getAllRoles());
-        return "updateuser";
-    }
-
-    @PostMapping("/updateuser/{id}")
-    public String updateUser(@ModelAttribute("user") @Valid User user) {
+    @PostMapping("/{id}")
+    public String updateUser(@ModelAttribute("user") @Valid User user, @PathVariable("id") Long id, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin";
+        }
+        user.setId(id);
         userService.updateUser(user);
         return "redirect:/admin";
     }
 
-    @PostMapping("/deleteuser")
-    public String delete(@RequestParam(value = "id", required = false) Long id) {
+    @PostMapping ("/deleteuser/{id}")
+    public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
-
         return "redirect:/admin";
-
     }
 }
