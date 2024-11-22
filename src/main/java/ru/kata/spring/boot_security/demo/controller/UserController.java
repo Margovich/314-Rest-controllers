@@ -34,7 +34,7 @@ public class UserController {
         User user = userRepository.findUserByNickname(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("auth", authentication);
-            return "userpage";
+            return "user";
 
     }
 }

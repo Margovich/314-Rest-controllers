@@ -12,6 +12,7 @@ import ru.kata.spring.boot_security.demo.validation.CreateGroup;
 import ru.kata.spring.boot_security.demo.validation.UpdateGroup;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,7 +26,8 @@ public class AdminController {
     }
 
     @GetMapping("")
-    public String getAllUsers(Model model) {
+    public String getAllUsers(Model model, Principal principal) {
+        model.addAttribute("currentUser", userService.loadUserByUsername(principal.getName()));
         model.addAttribute("usersList", userService.getAllUsers());
         model.addAttribute("user", new User());
         model.addAttribute("role", userService.getAllRoles());
