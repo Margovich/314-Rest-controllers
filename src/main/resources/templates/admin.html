@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ панель</title>
+    <title>Страница администратора</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 
     <style>
         .user-info-bar {
@@ -97,7 +98,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="text-center">Админ панель</h1>
+            <h1 class="text-center">Страница администратора</h1>
         </div>
     </div>
     <div class="row">
@@ -160,7 +161,7 @@
                                                 <div class="modal-body">
                                                     <div class="container text-center">
                                                         <div>
-                                                            <label for="ID"><b>Id</b></label>
+                                                            <label for="ID"><b>ID</b></label>
                                                             <div>
                                                                 <input type="text" th:name="id"
                                                                        th:value="${user.id}"
@@ -177,7 +178,7 @@
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <label for="password1"><b>Password</b></label>
+                                                            <label for="password1"><b>Пароль</b></label>
                                                             <div>
                                                                 <input type="password"
                                                                        th:name="password"
@@ -194,7 +195,7 @@
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <label for="age1"><b>Age</b></label>
+                                                            <label for="age1"><b>Возраст</b></label>
                                                             <div>
                                                                 <input type="number"
                                                                        th:name="age"
@@ -204,7 +205,7 @@
                                                         </div>
 
                                                         <div>
-                                                            <label for="roles">Role</label>
+                                                            <label for="roles">Роли</label>
                                                             <div>
                                                                 <select th:name="roles" th:value="${user.roles}" id="roles" size="2" class="form-control" multiple required>
                                                                     <option value="1">Администратор</option>
@@ -217,10 +218,10 @@
                                                 <div class="modal-footer">
                                                     <button type="button"
                                                             class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close
+                                                            data-bs-dismiss="modal">Закрыть
                                                     </button>
                                                     <button type="submit"
-                                                            class="btn btn-primary">Edit
+                                                            class="btn btn-primary">Изменить
                                                     </button>
                                                 </div>
                                             </form>
@@ -245,7 +246,7 @@
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title"
-                                                            id="exampleModalLabel1">Delete user</h5>
+                                                            id="exampleModalLabel1">Удалить пользователя</h5>
                                                         <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
@@ -261,7 +262,7 @@
                                                                 </div>
                                                             </div>
                                                             <div>
-                                                                <label for="nickname"><b>Name</b></label>
+                                                                <label for="nickname"><b>Имя пользователя</b></label>
                                                                 <div>
                                                                     <input type="text"
                                                                            th:name="nickname"
@@ -279,7 +280,7 @@
                                                                 </div>
                                                             </div>
                                                             <div>
-                                                                <label for="age2"><b>Age</b></label>
+                                                                <label for="age2"><b>Возраст</b></label>
                                                                 <div>
                                                                     <input type="number"
                                                                            th:name="age"
@@ -288,7 +289,7 @@
                                                                 </div>
                                                             </div>
                                                             <div>
-                                                                <label for="roles">Role</label>
+                                                                <label for="roles">Роли</label>
                                                                 <div>
                                                                     <select th:name="roles" id="roles1" disabled size="2" class="form-control" multiple required>
                                                                         <option th:each="role : ${user.roles}"
@@ -305,10 +306,10 @@
                                                     <div class="modal-footer">
                                                         <button type="button"
                                                                 class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close
+                                                                data-bs-dismiss="modal">Закрыть
                                                         </button>
                                                         <button type="submit"
-                                                                class="btn btn-danger">Delete
+                                                                class="btn btn-danger">Удалить
                                                         </button>
                                                     </div>
                                                 </form>
@@ -348,7 +349,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Roles:</label>
+                            <label class="col-sm-2 control-label">Роли:</label>
                             <div class="col-sm-10">
                                 <select th:field="*{roles}" class="form-control" required>
                                     <option value="" disabled selected>Выберите роль</option>
