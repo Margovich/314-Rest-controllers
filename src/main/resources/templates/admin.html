@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:font-weight="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,9 +30,12 @@
             position: fixed;
             left: 0;
             height: calc(100% - 70px);
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             border-right: 1px solid #ddd;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
         }
 
         .side-panel .button-active {
@@ -48,6 +51,7 @@
             padding-left: 20px;
             box-sizing: border-box;
         }
+
         .side-panel .button-passive {
             display: block;
             padding: 10px;
@@ -61,24 +65,134 @@
             padding-left: 20px;
             box-sizing: border-box;
         }
-        .side-panel .button-active:first-child {
-            margin-top: 20px;
-        }
+
         .side-panel .button-active:hover {
             background-color: #0056b3;
             transform: scale(1.05);
         }
+
         .side-panel .button-passive:hover {
             background-color: #0056b3;
             color: white;
             transform: scale(1.05);
         }
+        table {
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-collapse: collapse;
+        }
+
+        body {
+        background-color:  #f6f6f6;
+        }
+
+        h3 {
+            font-size: 24px;
+            border-left: 1px solid #dcdcdc;
+            border-right: 1px solid #dcdcdc;
+            margin: 0;
+            padding: 10px;
+        }
+        .btn-turquoise {
+            background-color: #629eb4;
+            color: white;
+        }
+
+        h4 {
+            font-size: 24px;
+            border-left: 1px solid #dcdcdc;
+            border-right: 1px solid #dcdcdc;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .input-border {
+
+            padding: 5px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+
+
+        }
+
+        .form-border {
+            border: 1px solid #dcdcdc;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        input {
+            width: 200px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .tab {
+            text-align: center;
+        }
+        .tab input {
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .custom-form-control {
+            width: 300px;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            color: #495057;
+            font-size: 1rem;
+            box-shadow: none;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .custom-form-control2 {
+            width: 200px;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            color: #495057;
+            font-size: 1rem;
+            box-shadow: none;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 13px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #717171;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+        }
+
 
     </style>
 </head>
 <body>
 <div class="user-info-bar">
-<div>
+    <div>
         <span class="navbar-text text-white">
             <strong th:text="${currentUser.email}"></strong> <span>с ролями: </span>
             <span th:each="role : ${currentUser.getRoles()}">
@@ -86,8 +200,8 @@
                 <span th:if="${role.getRoleName()} == 'ROLE_USER'" th:text="'Пользователь'"></span>
             </span>
         </span>
-</div>
-<a href="/logout" class="btn btn-grey">Выход</a>
+    </div>
+    <a href="/logout" class="btn btn-grey">Выход</a>
 </div>
 
 <div class="side-panel">
@@ -95,24 +209,27 @@
     <a href="/user" class="button-passive">Пользователь</a>
 </div>
 
-<div class="container">
+<div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="text-center">Страница администратора</h1>
+            <h1 class=>Страница администратора</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true">Все пользователи</a>
+                    <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab"
+                       aria-controls="users" aria-selected="true">Все пользователи</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="new-user-tab" data-toggle="tab" href="#new-user" role="tab" aria-controls="new-user" aria-selected="false">Новый пользователь</a>
+                    <a class="nav-link" id="new-user-tab" data-toggle="tab" href="#new-user" role="tab"
+                       aria-controls="new-user" aria-selected="false">Новый пользователь</a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+                    <h3>Список пользователей</h3>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -138,7 +255,7 @@
                                       th:text="'Пользователь'"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-secondary"
+                                <button type="button" class="btn btn-turquoise"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editModal"
                                         th:attrappend="data-bs-target=${user.getId()}">
@@ -153,14 +270,14 @@
                                                   th:action="@{/admin/{id}(id=${user.getId()})}">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
-                                                        id="exampleModalLabel">Edit user</h5>
-                                                    <button type="button" class="btn-close"
+                                                        id="exampleModalLabel">Изменить пользователя</h5>
+                                                    <button type="button" class="close-button"
                                                             data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                            aria-label="Close">x</button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="container text-center">
-                                                        <div>
+                                                        <div class="form-group">
                                                             <label for="ID"><b>ID</b></label>
                                                             <div>
                                                                 <input type="text" th:name="id"
@@ -168,7 +285,7 @@
                                                                        id="ID" disabled/>
                                                             </div>
                                                         </div>
-                                                        <div>
+                                                        <div class="form-group">
                                                             <label for="nickname1"><b>Имя пользователя</b></label>
                                                             <div>
                                                                 <input type="text"
@@ -177,7 +294,7 @@
                                                                        id="nickname1"/>
                                                             </div>
                                                         </div>
-                                                        <div>
+                                                        <div class="form-group">
                                                             <label for="password1"><b>Пароль</b></label>
                                                             <div>
                                                                 <input type="password"
@@ -185,7 +302,7 @@
                                                                        id="password1" required/>
                                                             </div>
                                                         </div>
-                                                        <div>
+                                                        <div class="form-group">
                                                             <label for="email"><b>Email</b></label>
                                                             <div>
                                                                 <input type="email"
@@ -194,7 +311,7 @@
                                                                        id="email1"/>
                                                             </div>
                                                         </div>
-                                                        <div>
+                                                        <div class="form-group">
                                                             <label for="age1"><b>Возраст</b></label>
                                                             <div>
                                                                 <input type="number"
@@ -204,10 +321,12 @@
                                                             </div>
                                                         </div>
 
-                                                        <div>
-                                                            <label for="roles">Роли</label>
+                                                        <div class="form-group">
+                                                            <label for="roles"><b>Роли</b></label>
                                                             <div>
-                                                                <select th:name="roles" th:value="${user.roles}" id="roles" size="2" class="form-control" multiple required>
+                                                                <select th:name="roles" th:value="${user.roles}"
+                                                                        id="roles" size="2" class="custom-form-control2"
+                                                                        multiple required>
                                                                     <option value="1">Администратор</option>
                                                                     <option value="2">Пользователь</option>
                                                                 </select>
@@ -242,18 +361,19 @@
                                          aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <form th:method="post" th:action="@{/admin/deleteuser/{id}(id=${user.id})}">
+                                                <form th:method="post"
+                                                      th:action="@{/admin/deleteuser/{id}(id=${user.id})}">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title"
                                                             id="exampleModalLabel1">Удалить пользователя</h5>
-                                                        <button type="button" class="btn-close"
+                                                        <button type="button" class="close-button"
                                                                 data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                                                aria-label="Close">x</button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="container text-center">
-                                                            <div>
+                                                        <div class="container text-center ">
+                                                            <div class="form-group">
                                                                 <label for="ID"><b>ID</b></label>
                                                                 <div>
                                                                     <input type="text" th:name="id"
@@ -261,7 +381,7 @@
                                                                            id="ID1" disabled/>
                                                                 </div>
                                                             </div>
-                                                            <div>
+                                                            <div class="form-group">
                                                                 <label for="nickname"><b>Имя пользователя</b></label>
                                                                 <div>
                                                                     <input type="text"
@@ -270,7 +390,7 @@
                                                                            id="nickname2" disabled/>
                                                                 </div>
                                                             </div>
-                                                            <div>
+                                                            <div class="form-group">
                                                                 <label for="email"><b>Email</b></label>
                                                                 <div>
                                                                     <input type="email"
@@ -279,7 +399,7 @@
                                                                            id="email2" disabled/>
                                                                 </div>
                                                             </div>
-                                                            <div>
+                                                            <div class="form-group">
                                                                 <label for="age2"><b>Возраст</b></label>
                                                                 <div>
                                                                     <input type="number"
@@ -288,10 +408,12 @@
                                                                            id="age2" disabled/>
                                                                 </div>
                                                             </div>
-                                                            <div>
-                                                                <label for="roles">Роли</label>
+                                                            <div class="form-group">
+                                                                <label for="roles"><b>Роли</b></label>
                                                                 <div>
-                                                                    <select th:name="roles" id="roles1" disabled size="2" class="form-control" multiple required>
+                                                                    <select th:name="roles" id="roles1" disabled
+                                                                            size="2" class="custom-form-control2" multiple
+                                                                            required>
                                                                         <option th:each="role : ${user.roles}"
                                                                                 th:if="${role.roleName == 'ROLE_ADMIN'}"
                                                                                 th:text="'Администратор'"></option>
@@ -323,36 +445,37 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="new-user" role="tabpanel" aria-labelledby="new-user-tab">
-                    <form th:action="@{/admin}" th:object="${user}" th:method="post" class="form-horizontal">
+                    <h4>Создание нового пользователя</h4>
+                    <form th:action="@{/admin}" th:object="${user}" th:method="post" class="form-horizontal form-border tab">
                         <div class="form-group">
-                            <label for="nickname" class="col-sm-2 control-label">Имя пользователя:</label>
+                            <label for="nickname" class="col-sm-2 control-label" style="font-weight: bold; white-space: nowrap;">Имя пользователя</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{nickname}" id="nickname" class="form-control" required>
+                                <input type="text" th:field="*{nickname}" id="nickname" class="form-control input-border" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label">Email:</label>
+                            <label for="email" class="col-sm-2 control-label" style="font-weight: bold;">Email</label>
                             <div class="col-sm-10">
-                                <input type="email" th:field="*{email}" id="email" class="form-control" required>
+                                <input type="email" th:field="*{email}" id="email" class="form-control input-border" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="password" class="col-sm-2 control-label">Пароль:</label>
+                            <label for="password" class="col-sm-2 control-label" style="font-weight: bold;">Пароль</label>
                             <div class="col-sm-10">
-                                <input type="password" th:field="*{password}" id="password" class="form-control" required>
+                                <input type="password" th:field="*{password}" id="password" class="form-control input-border"
+                                       required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="age" class="col-sm-2 control-label">Возраст:</label>
+                            <label for="age" class="col-sm-2 control-label" style="font-weight: bold;">Возраст</label>
                             <div class="col-sm-10">
-                                <input type="number" th:field="*{age}" id="age" class="form-control" required>
+                                <input type="number" th:field="*{age}" id="age" class="form-control input-border" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Роли:</label>
+                            <label class="col-sm-2 control-label" style="font-weight: bold;">Роли</label>
                             <div class="col-sm-10">
-                                <select th:field="*{roles}" class="form-control" required>
-                                    <option value="" disabled selected>Выберите роль</option>
+                                <select th:field="*{roles}" class="custom-form-control input-border" required multiple size="2">
                                     <option value="1">Администратор</option>
                                     <option value="2">Пользователь</option>
                                 </select>
