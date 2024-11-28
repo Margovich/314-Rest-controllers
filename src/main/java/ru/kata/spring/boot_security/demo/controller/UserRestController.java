@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -21,7 +22,9 @@ public class UserRestController {
     }
 
     @GetMapping("")
-    public User getUser(Principal principal) {
-        return userService.findByNickname(principal.getName());
+    public ResponseEntity<User> getCurrentUser(Principal principal) {
+        User user = userService.findByNickname(principal.getName());
+        return ResponseEntity.ok(user);
     }
+
 }
