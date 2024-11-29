@@ -153,24 +153,21 @@
 </div>
 
 <script>
-
+    console.log("начало скрипта")
     document.addEventListener("DOMContentLoaded", function () {
         fetchUserInfo();
-
         function fetchUserInfo() {
-            fetch('user/')
+            fetch('user')
                 .then(response => response.json())
                 .then(user => {
-                    document.getElementById("#id").innerText = user.id || 'Неизвестно';
-                    document.getElementById("#nickname").innerText = user.nickname || 'Неизвестно';
-                    document.getElementById("#email").innerText = user.email || 'Неизвестно';
-                    document.getElementById("#age").innerText = user.age || 'Неизвестно';
-                    document.getElementById("#roles").innerText = user.roles.map(role => role.name.replace("ROLE_", "")).join(" , ")
-
+                    document.getElementById("id").innerText = user.id;
+                    document.getElementById("nickname").innerText = user.nickname;
+                    document.getElementById("email").innerText = user.email;
+                    document.getElementById("age").innerText = user.age;
+                    document.getElementById("roles").innerText = user.roles.map(role => role.name.replace("ROLE_", "")).join(", ")
                 });
         }
     });
-
 </script>
 
 
