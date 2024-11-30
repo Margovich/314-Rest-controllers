@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <style>
         .user-info-bar {
             background-color: #2c2c2c;
@@ -103,18 +104,15 @@
 <div class="user-info-bar">
     <div>
         <span class="navbar-text text-white">
-            <strong th:text="${user.email}"></strong> <span>с ролями: </span>
-            <span th:each="role : ${user.getRoles()}">
-                <span th:if="${role.getRoleName()} == 'ROLE_ADMIN'" th:text="'Администратор'"></span>
-                <span th:if="${role.getRoleName()} == 'ROLE_USER'" th:text="'Пользователь'"></span>
-            </span>
+            <strong id="userEmail"></strong> с ролями:
+            <span id="userRoles"></span>
         </span>
     </div>
     <a href="/logout" class="btn btn-grey">Выход</a>
 </div>
 
 <div class="side-panel">
-            <span th:each="role : ${user.getRoles()}">
+            <span th:each="role : ${user.roles}">
                 <span th:if="${role.getRoleName()} == 'ROLE_ADMIN'">
                     <a href="/admin" class="button-passive">Администратор</a>
                 </span>
@@ -153,21 +151,25 @@
 </div>
 
 <script>
-    console.log("начало скрипта")
     document.addEventListener("DOMContentLoaded", function () {
         fetchUserInfo();
+
         function fetchUserInfo() {
-            fetch('user')
+            fetch('/api/user/')
                 .then(response => response.json())
                 .then(user => {
                     document.getElementById("id").innerText = user.id;
                     document.getElementById("nickname").innerText = user.nickname;
                     document.getElementById("email").innerText = user.email;
                     document.getElementById("age").innerText = user.age;
-                    document.getElementById("roles").innerText = user.roles.map(role => role.name.replace("ROLE_", "")).join(", ")
+                    document.getElementById("userEmail").innerText = user.email;
+                    const roles = user.roles.map(role => role.roleName.replace("ROLE_USER", "Пользователь").replace("ROLE_ADMIN", "Администратор")).join(", ");
+                    document.getElementById("roles").innerText = roles;
+                    document.getElementById("userRoles").innerText = roles;
                 });
         }
     });
+
 </script>
 
 
