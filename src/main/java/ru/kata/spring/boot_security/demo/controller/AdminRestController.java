@@ -1,4 +1,3 @@
-/*
 package ru.kata.spring.boot_security.demo.controller;
 
 
@@ -7,14 +6,18 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.model.UserDTO;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminRestController {
 
     private final UserService userService;
@@ -24,28 +27,38 @@ public class AdminRestController {
         this.userService = userService;
     }
 
-    @GetMapping("")
+    @GetMapping("/thisUser")
+    public ResponseEntity<User> getThisUser(Principal principal) {
+        User user = userService.findByNickname(principal.getName());
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public User getUser (@PathVariable("id") Long id){
-        return userService.getUser(id);
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+        User user = userService.getUser(id);
+        Set<Role> roles = user.getRoles();
+        UserDTO userDTO = new UserDTO(user.getId(), user.getNickname(), user.getPassword(), user.getEmail(), user.getAge(), roles);
+        return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping()
+
+    @GetMapping
     public ResponseEntity<User> createUser (@Valid @RequestBody User user) {
         userService.saveUser(user);
         User createdUser = userService.findByNickname(user.getUsername());
         return ResponseEntity.ok(createdUser);
     }
 
-    @PutMapping ("/{id}")
-    public User updateUser(@ModelAttribute("user") @Valid User user, @PathVariable("id") Long id, BindingResult bindingResult) {
-        user.setId(id);
-        userService.updateUser(user);
-        return user;
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(user);
+        updatedUser.setId(id);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
@@ -55,4 +68,3 @@ public class AdminRestController {
     }
 
 }
-*/
