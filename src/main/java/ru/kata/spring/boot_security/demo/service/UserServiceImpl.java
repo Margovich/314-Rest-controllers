@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.service;
 
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,8 @@ import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -48,13 +51,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public User updateUser(User user) {
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User updateUser(Long id, @Valid User updatedUser) {
+        User user = usersRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с ID " + id + " не найден"));
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
-
-        usersRepository.save(user);
-        return user;
+        if (usersRepository.findUserByNickname(updatedUser.getUsername()) != null &&
+                !user.getUsername().equals(updatedUser.getUsername())) {
+            throw new DuplicateKeyException("Имя " + updatedUser.getUsername() + " занято, выберите другое имя!");
+        }
+        user.setNickname(updatedUser.getNickname());
+        user.setEmail(updatedUser.getEmail());
+        user.setAge(updatedUser.getAge());
+        user.setRoles(updatedUser.getRoles());
+        return usersRepository.save(user);
     }
 
     @Override

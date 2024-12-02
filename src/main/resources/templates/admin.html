@@ -539,57 +539,73 @@
                             const userId = this.getAttribute('data-user-id');
                             const modalWin = document.querySelector('#editModal');
                             const inputs = modalWin.querySelectorAll('input');
-                            console.log(userId)
 
-                            inputs.forEach(input => {
-                                input.disabled = false;
-                            });
-
-                            console.log("User data:", user);
-
-                            // После fetch, когда пользователь загружается
+                            // Загрузка информации о пользователе
                             fetch(`/api/admin/${userId}`)
                                 .then(response => response.json())
-                                .then(user => {
-                                    for (let key in user) {
-                                        if (user.hasOwnProperty(key)) {
-                                            const inputField = modalWin.querySelector(`#${key}`); // Поправить селектор
-                                            if (inputField) {
-                                                inputField.value = user[key]; // Предполагаем, что user[key] актуален
-                                            } else {
-                                                console.warn(`Input field not found for key: ${key}`);
-                                            }
-                                        }
-                                    }
-                                    console.log('Отправляемые данные:', JSON.stringify(updatedUser));
-                                    console.log('Отправляемые данные:', JSON.stringify(filteredUser));
+                                .then(fetchedUser => {
+                                    console.log("Fetched user data for ID:", userId);
 
-                                    // Обработка отправки формы
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const submitButton = document.querySelector('#modalForm input[type="submit"]');
+                                    // Заполнение полей модального окна
+                                    inputs.forEach(input => {
+                                        const key = input.name; // Убедитесь, что у input есть атрибут name
+                                        if (fetchedUser.hasOwnProperty(key)) {
+                                            input.value = fetchedUser[key];
+                                        } else {
+                                            console.warn(`Input field not found for key: ${key}`);
+                                        }
+                                    });
+
+                                    // Здесь мы находим кнопку только после загрузки данных
+                                    const submitButton = modalWin.querySelector('input[type="submit"]');
+
+                                    if (submitButton) {
                                         submitButton.onclick = function (event) {
                                             event.preventDefault();
-                                            const updatedUser = {...user};
+                                            const updatedUser = { id: userId }; // Убедитесь, что ID обновляется правильно
 
+                                            // Собираем данные из полей ввода
+                                            inputs.forEach(input => {
+                                                if (input.name) {
+                                                    updatedUser[input.name] = input.value; // Присваиваем значения из полей ввода
+                                                }
+                                            });
+
+                                            console.log("Updated User ID:", updatedUser.id);
+
+                                            // Проверка на корректный ID
+                                            if (updatedUser.id == null || updatedUser.id === 0) {
+                                                console.error("Invalid User ID:", updatedUser.id);
+                                                return;
+                                            }
+
+                                            // Отправка запроса на обновление пользователя
                                             fetch(`/admin/rest/${updatedUser.id}`, {
                                                 method: 'PATCH',
                                                 headers: {
                                                     'Content-Type': 'application/json; charset=utf-8'
                                                 },
-                                                body: JSON.stringify()
+                                                body: JSON.stringify(updatedUser)
                                             })
-                                                .then(response => {
-                                                    return response.json();
-                                                })
+                                                .then(response => response.json())
                                                 .then(data => {
                                                     $('.modal').modal('hide');
-                                                    // Обновление таблицы
+                                                    // Здесь вы можете обновить таблицу или выполнить другие действия
                                                 })
+                                                .catch(error => {
+                                                    console.error("Error updating user data:", error);
+                                                });
                                         };
-                                    });
+                                    } else {
+                                        console.error("Submit button not found in modal.");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Error fetching user data:", error);
                                 });
-
                         });
+
+
 
                         editCell.appendChild(editButton);
                         row.appendChild(editCell);

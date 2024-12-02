@@ -50,7 +50,7 @@ public class AdminController {
             return "admin";
         }
         user.setId(id);
-        userService.updateUser(user);
+        userService.updateUser(id, user);
         return "redirect:/admin";
     }
 

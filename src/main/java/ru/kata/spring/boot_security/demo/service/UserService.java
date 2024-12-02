@@ -6,12 +6,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
     //User
     void saveUser(User user);
-    User updateUser(User user);
+    User updateUser(Long id, @Valid User updatedUser);
     void deleteUser(long id);
     User getUser(long id);
     List<User> getAllUsers();
