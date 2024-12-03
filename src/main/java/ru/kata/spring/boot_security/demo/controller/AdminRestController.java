@@ -66,4 +66,10 @@ public class AdminRestController {
         return ResponseEntity.ok(id);
     }
 
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        List<Role> roles = userService.getAllRoles();
+        return ResponseEntity.ok(roles);
+    }
+
 }

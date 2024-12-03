@@ -312,9 +312,10 @@
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form th:method="PATCH"
-                  th:action="@{/admin/{id}(id=${user.getId()})}">
-                <div class="modal-header">
+            <div id="errorContainer" class="mb-3"></div>
+            <form id="editUserForm" onsubmit="(function(event) { submitEditUser(event); })(event)">
+
+            <div class="modal-header">
                     <h5 class="modal-title"
                         id="exampleModalLabel">Изменить пользователя</h5>
                     <button type="button" class="close-button"
@@ -324,47 +325,34 @@
                 </div>
                 <div class="modal-body">
                     <div class="container text-center">
+
                         <div class="form-group">
-                            <label for="id"><b>ID</b></label>
-                            <div>
-                                <input id="id" disabled/>
-                            </div>
+                            <label for="editUserId"><b>ID</b></label>
+                            <input id="editUserId" disabled/>
                         </div>
                         <div class="form-group">
-                            <label for="nickname"><b>Имя пользователя</b></label>
-                            <div>
-                                <input id="nickname" />
-                            </div>
+                            <label for="editNickname"><b>Имя пользователя</b></label>
+                            <input id="editNickname"/>
                         </div>
                         <div class="form-group">
-                            <label for="password"><b>Пароль</b></label>
-                            <div>
-                                <input id="password"/>
-                            </div>
+                            <label for="editPassword"><b>Пароль</b></label>
+                            <input id="editPassword"/>
                         </div>
                         <div class="form-group">
-                            <label for="email"><b>Email</b></label>
-                            <div>
-                                <input id="email"/>
-                            </div>
+                            <label for="editEmail"><b>Email</b></label>
+                            <input id="editEmail"/>
                         </div>
                         <div class="form-group">
-                            <label for="age"><b>Возраст</b></label>
-                            <div>
-                                <input id="age"/>
-                            </div>
+                            <label for="editAge"><b>Возраст</b></label>
+                            <input id="editAge"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="roles"><b>Роли</b></label>
-                            <div>
-                                <select th:name="roles" th:value="${user.roles}"
-                                        id="roles" size="2" class="custom-form-control2"
-                                        multiple required>
-                                    <option value="1">Администратор</option>
-                                    <option value="2">Пользователь</option>
-                                </select>
-                            </div>
+                            <label for="editRoles"><b>Роли</b></label>
+                            <select
+                                    id="editRoles" size="2" class="custom-form-control2"
+                                    multiple required>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -469,9 +457,28 @@
 </div>
 
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         fetchUserInfo();
         populateTable();
+        fetchRoles();
+
+        async function fetchRoles() {
+            const response = await fetch('/api/admin/roles');
+            const roles = await response.json();
+            const rolesSelect = document.getElementById("roles");
+            const editRolesSelect = document.getElementById("editRoles");
+            rolesSelect.innerHTML = '';
+            editRolesSelect.innerHTML = '';
+
+            roles.forEach(role => {
+                const option = document.createElement("option");
+                option.value = role.id;
+                option.textContent = role.roleName;
+                rolesSelect.appendChild(option.cloneNode(true));
+                editRolesSelect.appendChild(option.cloneNode(true));
+            });
+        }
 
         //верхняя панель
         function fetchUserInfo() {
@@ -484,7 +491,6 @@
                     const roles = user.roles.map(role => role.roleName.replace("ROLE_USER", "Пользователь").replace("ROLE_ADMIN", "Администратор")).join(", ");
                     document.getElementById("thisUserRoles").innerText = roles;
                 })
-                .catch(error => console.error('There was a problem with the fetch operation:', error));
         }
 
         //таблица пользователей
@@ -498,9 +504,8 @@
                     tableBody.innerHTML = ''; // Очищаем содержимое таблицы
 
                     users.forEach(user => {
-                        const row = document.createElement('tr'); // Создаем строку таблицы
+                        const row = document.createElement('tr');
 
-                        // Создаем ячейки и добавляем их в строку
                         const idCell = document.createElement('td');
                         idCell.textContent = user.id;
                         row.appendChild(idCell);
@@ -524,8 +529,6 @@
                         ).join(", ");
                         row.appendChild(rolesCell);
 
-
-                        //кнопка изменить
                         const editCell = document.createElement('td');
                         const editButton = document.createElement('button');
                         editButton.type = 'button';
@@ -534,79 +537,9 @@
                         editButton.setAttribute('data-bs-target', '#editModal');
                         editButton.setAttribute('data-user-id', user.id);
                         editButton.textContent = 'Изменить';
-
-                        editButton.addEventListener('click', function () {
-                            const userId = this.getAttribute('data-user-id');
-                            const modalWin = document.querySelector('#editModal');
-                            const inputs = modalWin.querySelectorAll('input');
-
-                            // Загрузка информации о пользователе
-                            fetch(`/api/admin/${userId}`)
-                                .then(response => response.json())
-                                .then(fetchedUser => {
-                                    console.log("Fetched user data for ID:", userId);
-
-                                    // Заполнение полей модального окна
-                                    inputs.forEach(input => {
-                                        const key = input.name; // Убедитесь, что у input есть атрибут name
-                                        if (fetchedUser.hasOwnProperty(key)) {
-                                            input.value = fetchedUser[key];
-                                        } else {
-                                            console.warn(`Input field not found for key: ${key}`);
-                                        }
-                                    });
-
-                                    // Здесь мы находим кнопку только после загрузки данных
-                                    const submitButton = modalWin.querySelector('input[type="submit"]');
-
-                                    if (submitButton) {
-                                        submitButton.onclick = function (event) {
-                                            event.preventDefault();
-                                            const updatedUser = { id: userId }; // Убедитесь, что ID обновляется правильно
-
-                                            // Собираем данные из полей ввода
-                                            inputs.forEach(input => {
-                                                if (input.name) {
-                                                    updatedUser[input.name] = input.value; // Присваиваем значения из полей ввода
-                                                }
-                                            });
-
-                                            console.log("Updated User ID:", updatedUser.id);
-
-                                            // Проверка на корректный ID
-                                            if (updatedUser.id == null || updatedUser.id === 0) {
-                                                console.error("Invalid User ID:", updatedUser.id);
-                                                return;
-                                            }
-
-                                            // Отправка запроса на обновление пользователя
-                                            fetch(`/admin/rest/${updatedUser.id}`, {
-                                                method: 'PATCH',
-                                                headers: {
-                                                    'Content-Type': 'application/json; charset=utf-8'
-                                                },
-                                                body: JSON.stringify(updatedUser)
-                                            })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    $('.modal').modal('hide');
-                                                    // Здесь вы можете обновить таблицу или выполнить другие действия
-                                                })
-                                                .catch(error => {
-                                                    console.error("Error updating user data:", error);
-                                                });
-                                        };
-                                    } else {
-                                        console.error("Submit button not found in modal.");
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error("Error fetching user data:", error);
-                                });
-                        });
-
-
-
+                        editButton.onclick = function () {
+                            openEditModal(user.id);
+                        };
                         editCell.appendChild(editButton);
                         row.appendChild(editCell);
 
@@ -619,15 +552,86 @@
                         deleteButton.setAttribute('data-bs-target', '#idDel');
                         deleteButton.setAttribute('data-user-id', user.id);
                         deleteButton.textContent = 'Удалить';
+                        deleteButton.onclick = function () {
+                            openDeleteModal(user.id);
+                        };
                         deleteCell.appendChild(deleteButton);
                         row.appendChild(deleteCell);
-
                         tableBody.appendChild(row);
                     });
 
                 })
+
+            function openEditModal(userId) {
+                fetch(`/api/admin/${userId}`)
+                    .then(response => response.json())
+                    .then(user => {
+                        document.getElementById('editUserId').value = user.id;
+                        document.getElementById('editNickname').value = user.nickname;
+                        document.getElementById('editPassword').value = user.password;
+                        document.getElementById('editEmail').value = user.email;
+                        document.getElementById('editAge').value = user.age;
+                        const editRolesSelect = document.getElementById("editRoles");
+                        Array.from(editRolesSelect.options).forEach(option => {
+                            option.selected = user.roles.some(role => role.id === option.value);
+                        });
+
+                        $('#editModal').modal('show');
+                    })
+                    .catch(error => console.error('Error fetching user data:', error));
+            }
+
+            async function submitEditUser(event) {
+                event.preventDefault();
+
+                console.log("submitEditUser вызвана");
+
+                const userId = document.getElementById('editUserId').value;
+                const userData = {
+                    nickname: document.getElementById('editNickname').value,
+                    password: document.getElementById('editPassword').value,
+                    email: document.getElementById('editEmail').value,
+                    age: document.getElementById('editAge').value,
+                    roles: Array.from(document.getElementById('editRoles').selectedOptions).map(option => ({id: option.value}))
+                };
+
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(userData),
+                });
+
+                if (response.ok) {
+                    $('#editModal').modal('hide');
+                    await populateTable();
+                } else {
+                    const errorData = await response.json();
+                    displayValidationErrors(errorData, 'errorContainer');
+                }
+            }
+
+            function displayValidationErrors(errors, containerId) {
+                const errorContainer = document.getElementById(containerId);
+                errorContainer.innerHTML = ''; // Clear previous errors
+
+                for (const [key, message] of Object.entries(errors)) {
+                    const errorElement = document.createElement('div');
+                    errorElement.className = 'alert alert-danger';
+                    errorElement.textContent = message;
+                    errorContainer.appendChild(errorElement);
+                }
+                $(`#${containerId}`).closest('.modal').modal('show');
+            }
+
+
+            function openDeleteModal(userId) {
+
+            }
+
+
         }
     });
+
 </script>
 
 
