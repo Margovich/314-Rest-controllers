@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
     //User
-    void saveUser(User user);
+    User saveUser(@Valid User user);
     User updateUser(Long id, @Valid User updatedUser);
     void deleteUser(long id);
     User getUser(long id);

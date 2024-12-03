@@ -251,20 +251,20 @@
                 </div>
                 <div class="tab-pane fade" id="new-user" role="tabpanel" aria-labelledby="new-user-tab">
                     <h4>Создание нового пользователя</h4>
-                    <form th:action="@{/admin}" th:object="${user}" th:method="post"
+                    <form id="addUserForm"
                           class="form-horizontal form-border tab">
                         <div class="form-group">
                             <label for="nickname" class="col-sm-2 control-label"
                                    style="font-weight: bold; white-space: nowrap;">Имя пользователя</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{nickname}" id="nickname1"
+                                <input type="text" id="nickname" name="nickname"
                                        class="form-control input-border" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label" style="font-weight: bold;">Email</label>
+                            <label for="email"  class="col-sm-2 control-label" style="font-weight: bold;">Email</label>
                             <div class="col-sm-10">
-                                <input type="email" th:field="*{email}" id="email1" class="form-control input-border"
+                                <input type="email" id="email" name="email" class="form-control input-border"
                                        required>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
                             <label for="password" class="col-sm-2 control-label"
                                    style="font-weight: bold;">Пароль</label>
                             <div class="col-sm-10">
-                                <input type="password" th:field="*{password}" id="password1"
+                                <input type="password" id="password" name="password"
                                        class="form-control input-border"
                                        required>
                             </div>
@@ -280,14 +280,14 @@
                         <div class="form-group">
                             <label for="age" class="col-sm-2 control-label" style="font-weight: bold;">Возраст</label>
                             <div class="col-sm-10">
-                                <input type="number" th:field="*{age}" id="age1" class="form-control input-border"
+                                <input type="number"  id="age" name="age" class="form-control input-border"
                                        required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" style="font-weight: bold;">Роли</label>
+                            <label for="roles" class="col-sm-2 control-label" style="font-weight: bold;">Роли</label>
                             <div class="col-sm-10">
-                                <select th:field="*{roles}" class="custom-form-control input-border" required multiple
+                                <select id="roles" name="roles" class="custom-form-control input-border" required multiple
                                         size="2">
                                     <option value="1">Администратор</option>
                                     <option value="2">Пользователь</option>
@@ -313,9 +313,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div id="errorContainer" class="mb-3"></div>
-            <form id="editUserForm" onsubmit="(function(event) { submitEditUser(event); })(event)">
+            <form id="editUserForm">
 
-            <div class="modal-header">
+                <div class="modal-header">
                     <h5 class="modal-title"
                         id="exampleModalLabel">Изменить пользователя</h5>
                     <button type="button" class="close-button"
@@ -327,8 +327,8 @@
                     <div class="container text-center">
 
                         <div class="form-group">
-                            <label for="editUserId"><b>ID</b></label>
-                            <input id="editUserId" disabled/>
+                            <label for="editId"><b>ID</b></label>
+                            <input id="editId" disabled/>
                         </div>
                         <div class="form-group">
                             <label for="editNickname"><b>Имя пользователя</b></label>
@@ -371,13 +371,12 @@
 </div>
 
 
-<div class="modal fade" th:id="'idDel'"
+<div class="modal fade" th:id="'deleteModal'"
      tabindex="-1" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form th:method="post"
-                  th:action="@{/admin/deleteuser/{id}(id=${user.id})}">
+            <form id="deleteUserForm">
                 <input type="hidden" name="_method" value="DELETE">
                 <div class="modal-header">
                     <h5 class="modal-title"
@@ -390,53 +389,28 @@
                 <div class="modal-body">
                     <div class="container text-center ">
                         <div class="form-group">
-                            <label for="ID"><b>ID</b></label>
-                            <div>
-                                <input type="text" th:name="id"
-                                       th:value="${user.id}"
-                                       id="ID1" disabled/>
-                            </div>
+                            <label for="deleteId"><b>ID</b></label>
+                            <input id="deleteId" disabled/>
                         </div>
                         <div class="form-group">
-                            <label for="nickname"><b>Имя пользователя</b></label>
-                            <div>
-                                <input type="text"
-                                       th:name="nickname"
-                                       th:value="${user.nickname}"
-                                       id="nickname2" disabled/>
-                            </div>
+                            <label for="deleteNickname"><b>Имя пользователя</b></label>
+                            <input id="deleteNickname" disabled/>
                         </div>
                         <div class="form-group">
-                            <label for="email"><b>Email</b></label>
-                            <div>
-                                <input type="email"
-                                       th:name="email"
-                                       th:value="${user.email}"
-                                       id="email2" disabled/>
-                            </div>
+                            <label for="deleteEmail"><b>Email</b></label>
+                            <input id="deleteEmail" disabled/>
                         </div>
                         <div class="form-group">
-                            <label for="age2"><b>Возраст</b></label>
-                            <div>
-                                <input type="number"
-                                       th:name="age"
-                                       th:value="${user.age}"
-                                       id="age2" disabled/>
-                            </div>
+                            <label for="deleteAge"><b>Возраст</b></label>
+                            <input id="deleteAge" disabled/>
                         </div>
                         <div class="form-group">
-                            <label for="roles"><b>Роли</b></label>
+                            <label for="deleteRoles"><b>Роли</b></label>
                             <div>
-                                <select th:name="roles" id="roles1" disabled
+                                <select id="deleteRoles" disabled
                                         size="2" class="custom-form-control2"
                                         multiple
                                         required>
-                                    <option th:each="role : ${user.roles}"
-                                            th:if="${role.roleName == 'ROLE_ADMIN'}"
-                                            th:text="'Администратор'"></option>
-                                    <option th:each="role : ${user.roles}"
-                                            th:if="${role.roleName == 'ROLE_USER'}"
-                                            th:text="'Пользователь'"></option>
                                 </select>
                             </div>
                         </div>
@@ -448,7 +422,7 @@
                             data-bs-dismiss="modal">Закрыть
                     </button>
                     <button type="submit"
-                            class="btn btn-danger">Удалить
+                            class="btn btn-danger" id="confirmDeleteButton">Удалить
                     </button>
                 </div>
             </form>
@@ -477,6 +451,17 @@
                 option.textContent = role.roleName;
                 rolesSelect.appendChild(option.cloneNode(true));
                 editRolesSelect.appendChild(option.cloneNode(true));
+            });
+            const deleteRolesSelect = document.getElementById("editRoles");
+            deleteRoles.innerHTML = '';
+            deleteRolesSelect.innerHTML = '';
+
+            roles.forEach(role => {
+                const option = document.createElement("option");
+                option.value = role.id;
+                option.textContent = role.roleName;
+                deleteRoles.appendChild(option.cloneNode(true));
+                deleteRolesSelect.appendChild(option.cloneNode(true));
             });
         }
 
@@ -562,11 +547,12 @@
 
                 })
 
+            //изменение пользователя
             function openEditModal(userId) {
                 fetch(`/api/admin/${userId}`)
                     .then(response => response.json())
                     .then(user => {
-                        document.getElementById('editUserId').value = user.id;
+                        document.getElementById('editId').value = user.id;
                         document.getElementById('editNickname').value = user.nickname;
                         document.getElementById('editPassword').value = user.password;
                         document.getElementById('editEmail').value = user.email;
@@ -580,6 +566,9 @@
                     })
                     .catch(error => console.error('Error fetching user data:', error));
             }
+
+            //подтверждение
+            document.getElementById('editUserForm').addEventListener('submit', submitEditUser);
 
             async function submitEditUser(event) {
                 event.preventDefault();
@@ -595,7 +584,7 @@
                     roles: Array.from(document.getElementById('editRoles').selectedOptions).map(option => ({id: option.value}))
                 };
 
-                const response = await fetch(`/api/users/${userId}`, {
+                const response = await fetch(`/api/admin/${userId}`, {
                     method: 'PUT',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(userData),
@@ -612,7 +601,7 @@
 
             function displayValidationErrors(errors, containerId) {
                 const errorContainer = document.getElementById(containerId);
-                errorContainer.innerHTML = ''; // Clear previous errors
+                errorContainer.innerHTML = '';
 
                 for (const [key, message] of Object.entries(errors)) {
                     const errorElement = document.createElement('div');
@@ -623,10 +612,91 @@
                 $(`#${containerId}`).closest('.modal').modal('show');
             }
 
-
+            //удаление пользователя
             function openDeleteModal(userId) {
+                fetch(`/api/admin/${userId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch user data');
+                        }
+                        return response.json();
+                    })
+                    .then(user => {
+                        console.log('User data:', user);
 
+                        document.getElementById('deleteId').value = user.id;
+                        document.getElementById('deleteNickname').value = user.nickname;
+                        document.getElementById('deleteEmail').value = user.email;
+                        document.getElementById('deleteAge').value = user.age;
+
+                        const deleteRolesSelect = document.getElementById("deleteRoles");
+                        if (deleteRolesSelect) {
+                            Array.from(deleteRolesSelect.options).forEach(option => {
+                                option.selected = user.roles.some(role => role.id.toString() === option.value);
+                            });
+                        }
+
+                        $('#deleteModal').modal('show');
+
+                        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+                        confirmDeleteButton.onclick = function () {
+                            deleteUser(userId);
+                        };
+                    })
+                    .catch(error => {
+                        console.error('Error fetching user data:', error);
+                    });
             }
+
+
+            // Подтверждение
+            document.getElementById('deleteUserForm').addEventListener('submit', deleteUser);
+
+            async function deleteUser(userId) {
+                try {
+                    const response = await fetch(`/api/admin/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to delete user: ' + response.status);
+                    }
+                    await populateTable();
+                    $('#deleteModal').modal('hide');
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                }
+            }
+
+            //добавление пользователя
+            document.getElementById("addUserForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                console.log("Add User form submitted");
+                const formData = new FormData(e.target);
+                const user = Object.fromEntries(formData.entries());
+
+
+                const roles = Array.from(document.getElementById('roles').selectedOptions).map(option => ({ id: option.value }));
+                user.roles = roles;
+
+                console.log("Данные пользователя, которые будут отправлены:", user);
+
+                const response = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                });
+
+                if (response.ok) {
+                    e.target.reset();
+                    await populateTable();
+                } else {
+                    const errorData = await response.json();
+                    displayValidationErrors(errorData,'addErrorContainer');
+                }
+            });
 
 
         }

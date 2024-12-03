@@ -17,7 +17,9 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -39,15 +41,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void saveUser(User user) {
-        if (
-                usersRepository.existsByNickname(user.getNickname())) {
+    public User saveUser(@Valid User user) {
+        if (usersRepository.findUserByNickname(user.getUsername())!=null) {
             throw new EntityExistsException("The user with this name already exists");
-        } else {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            usersRepository.save(user);
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            Role existingRole = rolesRepository.findById(role.getId())
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+            roles.add(existingRole);
+        }
+
+        user.setRoles(roles);
+        usersRepository.save(user);
+        return user;
     }
+
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
