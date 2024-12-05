@@ -112,11 +112,7 @@
 </div>
 
 <div class="side-panel">
-            <span th:each="role : ${user.roles}">
-                <span th:if="${role.getRoleName()} == 'ROLE_ADMIN'">
-                    <a href="/admin" class="button-passive">Администратор</a>
-                </span>
-            </span>
+    <a id="admin-button" class="button-passive" style="display: none;">Администратор</a>
     <a href="/user" class="button-active">Пользователь</a>
 </div>
 
@@ -151,24 +147,45 @@
 </div>
 
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         fetchUserInfo();
 
         function fetchUserInfo() {
-            fetch('/api/user/')
-                .then(response => response.json())
+            fetch('/api/user')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(user => {
+
+                    const isAdmin = user.roles.some(role => role.roleName === 'ROLE_ADMIN');
+                    if (isAdmin) {
+                        const adminButton = document.getElementById('admin-button');
+                        adminButton.style.display = 'block';
+                        adminButton.href = '/admin';
+                    }
+
+
                     document.getElementById("id").innerText = user.id;
                     document.getElementById("nickname").innerText = user.nickname;
                     document.getElementById("email").innerText = user.email;
                     document.getElementById("age").innerText = user.age;
                     document.getElementById("userEmail").innerText = user.email;
-                    const roles = user.roles.map(role => role.roleName.replace("ROLE_USER", "Пользователь").replace("ROLE_ADMIN", "Администратор")).join(", ");
+
+                    const roles = user.roles.map(role =>
+                        role.roleName.replace("ROLE_USER", "Пользователь").replace("ROLE_ADMIN", "Администратор")
+                    ).join(", ");
+
                     document.getElementById("roles").innerText = roles;
                     document.getElementById("userRoles").innerText = roles;
-                });
+                })
+
         }
     });
+
 
 </script>
 

@@ -29,26 +29,30 @@ public class AdminRestController {
         this.userService = userService;
     }
 
+    // Получить текущего пользователя
     @GetMapping("/thisUser")
     public ResponseEntity<User> getThisUser(Principal principal) {
         User user = userService.findByNickname(principal.getName());
         return ResponseEntity.ok(user);
     }
 
+    // Получить всех пользователей
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    // Получить пользователя по ID
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         User user = userService.getUser(id);
         Set<Role> roles = user.getRoles();
-        UserDTO userDTO = new UserDTO(user.getId(), user.getNickname(), user.getPassword(), user.getEmail(), user.getAge(), roles);
+        UserDTO userDTO = new UserDTO(user.getId(), user.getNickname(), user.getPassword(),
+                user.getEmail(), user.getAge(), roles);
         return ResponseEntity.ok(userDTO);
     }
 
-
+    // Создать пользователя
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
         try {
@@ -60,24 +64,25 @@ public class AdminRestController {
         }
     }
 
-
-
+    // Обновить пользователя
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         User updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
     }
 
+    // Удалить пользователя
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok(id);
     }
 
+    // Получить все роли
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
         List<Role> roles = userService.getAllRoles();
         return ResponseEntity.ok(roles);
     }
-
 }
+

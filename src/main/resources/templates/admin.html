@@ -575,7 +575,7 @@
 
                 console.log("submitEditUser вызвана");
 
-                const userId = document.getElementById('editUserId').value;
+                const userId = document.getElementById('editId').value;
                 const userData = {
                     nickname: document.getElementById('editNickname').value,
                     password: document.getElementById('editPassword').value,
@@ -712,13 +712,3 @@
 </body>
 </html>
 
-<!--
-// Обработчик событий удалить
-const deleteButtons = tableBody.querySelectorAll('.delete-button');
-deleteButtons.forEach(button => {
-button.addEventListener('click', function () {
-
-const userId = this.getAttribute('data-user-id');
-document.getElementById('confirmDeleteButton').setAttribute('data-user-id', userId);
-});
-});-->
